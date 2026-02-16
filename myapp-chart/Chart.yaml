@@ -1,0 +1,15 @@
+apiVersion: v2
+name: myapp-chart
+description: A basic Helm chart for learning Kubernetes deployments
+type: application
+
+# Chart version (increment when you make changes)
+version: 0.1.0
+
+# Application version (your app's version)
+appVersion: "1.0"
+
+# Optional: maintainers list
+maintainers:
+  - name: DevOps Learner
+    email: learner@example.com

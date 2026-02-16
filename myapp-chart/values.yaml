@@ -1,0 +1,36 @@
+# Default values for myapp-chart - LEARNING HELM
+# Override these when installing: helm install myapp ./myapp-chart -f custom-values.yaml
+
+# Number of replica pods to run
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: "1.25"  # Override with --set image.tag=1.26
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+
+# Ingress - disabled by default
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: myapp.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Resource limits and requests
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
