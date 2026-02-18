@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-dev
+  namespace: argocd
+spec:
+  project: default  # <-- REQUIRED in ArgoCD 2.x
+  destination:
+    namespace: dev
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/itamardavideliyahu-beep/Helms.git
+    targetRevision: dev
+    path: myapp-chart
+    helm:
+      valueFiles:
+        - values-dev.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true

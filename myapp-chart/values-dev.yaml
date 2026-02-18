@@ -1,0 +1,27 @@
+# Override replica count for dev (smaller than prod)
+replicaCount: 1
+
+# Use a dev-specific image tag
+image:
+  repository: itamardavideliyahu/myapp
+  tag: "latest"
+  pullPolicy: Always
+
+# Different resource limits for dev
+resources:
+  limits:
+    cpu: 50m
+    memory: 64Mi
+  requests:
+    cpu: 25m
+    memory: 32Mi
+
+# Enable ingress for dev environment
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: myapp-dev.example.com
+      paths:
+        - path: /
+          pathType: Prefix
