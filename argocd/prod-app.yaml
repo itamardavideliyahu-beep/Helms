@@ -4,7 +4,7 @@ metadata:
   name: myapp-prod
   namespace: argocd
 spec:
-  project: default
+  project: myapp-project
   source:
     repoURL: https://github.com/itamardavideliyahu-beep/Helms.git
     targetRevision: main

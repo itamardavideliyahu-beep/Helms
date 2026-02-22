@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: myapp-project
+  namespace: argocd
+spec:
+  description: Project for myapp dev and prod environments
+
+  # Which Git repos are allowed as sources
+  sourceRepos:
+    - https://github.com/itamardavideliyahu-beep/Helms.git
+
+  # Which clusters and namespaces are allowed as destinations
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: dev
+    - server: https://kubernetes.default.svc
+      namespace: prod
+
+  # Which Kubernetes resource types are allowed to be deployed
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+
+  namespaceResourceWhitelist:
+    - group: apps
+      kind: Deployment
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ConfigMap
+    - group: networking.k8s.io
+      kind: Ingress
+
+  # RBAC roles within this project
+  roles:
+    # Developer role - can sync dev only, read-only prod
+    - name: developer
+      description: Developer role - full access to dev, read-only to prod
+      policies:
+        - p, proj:myapp-project:developer, applications, get, myapp-project/*, allow
+        - p, proj:myapp-project:developer, applications, sync, myapp-project/myapp-dev, allow
+        - p, proj:myapp-project:developer, applications, update, myapp-project/myapp-dev, allow
+      groups:
+        - developers
+
+    # Admin role - full access to all environments
+    - name: admin
+      description: Admin role - full access to all environments
+      policies:
+        - p, proj:myapp-project:admin, applications, *, myapp-project/*, allow
+      groups:
+        - admins

@@ -22,5 +22,21 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          # Liveness probe - restart pod if app is stuck/dead
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 3
+          # Readiness probe - only send traffic when app is ready
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

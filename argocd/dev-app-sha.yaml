@@ -1,0 +1,41 @@
+# BONUS: Using commit SHA instead of branch
+#
+# Why use SHA?
+#   - Immutable: a SHA always points to the exact same code
+#   - Safer for production: you deploy exactly what you tested
+#   - Auditable: you can trace exactly which code is deployed
+#
+# How to get the current SHA:
+#   git rev-parse HEAD
+#   git log --oneline -1
+#
+# How to use:
+#   1. Get the SHA: git log --oneline -1
+#   2. Replace targetRevision below with that SHA
+#   3. kubectl apply -f argocd/dev-app-sha.yaml
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-dev-sha
+  namespace: argocd
+spec:
+  project: myapp-project
+  source:
+    repoURL: https://github.com/itamardavideliyahu-beep/Helms.git
+    # Use exact commit SHA instead of branch name
+    # This is IMMUTABLE - always deploys the same code
+    targetRevision: 5070fff  # <-- replace with: git log --oneline -1
+    path: myapp-chart
+    helm:
+      valueFiles:
+        - values-dev.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev-sha
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false  # false because SHA never changes, no drift expected
+    syncOptions:
+      - CreateNamespace=true
